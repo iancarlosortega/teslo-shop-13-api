@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsOptional, Min } from 'class-validator';
 
-export class PaginationDto {
+export class PaginationProductsDto {
   @ApiProperty({
     example: 5,
     description: 'Page number',
@@ -24,4 +24,11 @@ export class PaginationDto {
   @Min(0)
   @Type(() => Number)
   take?: number;
+
+  @ApiProperty({
+    example: 'men',
+    description: 'Gender of the product',
+  })
+  @IsOptional()
+  gender?: string;
 }

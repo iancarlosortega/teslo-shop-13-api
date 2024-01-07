@@ -10,11 +10,13 @@ import {
   Query,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
-import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
 import { GetUser } from 'src/auth/decorators';
 import { User } from 'src/users/entities/user.entity';
-import { PaginationDto } from 'src/common/dtos/pagination.dto';
+import {
+  CreateProductDto,
+  UpdateProductDto,
+  PaginationProductsDto,
+} from './dtos';
 
 @Controller('products')
 export class ProductsController {
@@ -26,8 +28,8 @@ export class ProductsController {
   }
 
   @Get()
-  findAll(@Query() paginationDto: PaginationDto) {
-    return this.productsService.findAll(paginationDto);
+  findAll(@Query() paginationProductsDto: PaginationProductsDto) {
+    return this.productsService.findAll(paginationProductsDto);
   }
 
   @Get(':term')

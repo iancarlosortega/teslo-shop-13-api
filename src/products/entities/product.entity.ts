@@ -62,11 +62,15 @@ export class Product {
   })
   tags: string[];
 
-  @ManyToOne(() => Category, (category) => category.products)
+  @ManyToOne(() => Category, (category) => category.products, {
+    eager: true,
+  })
   @JoinColumn({ name: 'categoryId' })
   category: Category;
 
-  @Column('text')
+  @Column('text', {
+    select: false,
+  })
   categoryId: string;
 
   @OneToMany(() => ProductImage, (productImage) => productImage.product, {
@@ -76,7 +80,6 @@ export class Product {
   images?: ProductImage[];
 
   @ManyToOne(() => User, (user) => user.product, {
-    eager: true,
     onDelete: 'CASCADE',
   })
   user: User;

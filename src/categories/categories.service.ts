@@ -31,17 +31,19 @@ export class CategoriesService {
   }
 
   async findAllWithPagination(paginatioDto: PaginationDto) {
-    const { limit = 10, offset = 0 } = paginatioDto;
+    const { take = 12, page = 1 } = paginatioDto;
 
     try {
-      const [totalItems, results] = await this.categoryRepository.findAndCount({
-        take: limit,
-        skip: offset,
-      });
+      const [categories, totalItems] =
+        await this.categoryRepository.findAndCount({
+          take,
+          skip: (page - 1) * take,
+        });
 
       return {
-        totalItems,
-        results,
+        currentPage: page,
+        totalPages: Math.ceil(totalItems / take),
+        categories,
       };
     } catch (error) {
       this.handleDBExceptions(error);

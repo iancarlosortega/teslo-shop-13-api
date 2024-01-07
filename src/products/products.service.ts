@@ -10,10 +10,12 @@ import { DataSource, Repository } from 'typeorm';
 import { validate as isUUID } from 'uuid';
 import { ProductImage } from './entities/product-image.entity';
 import { Product } from './entities/product.entity';
-import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
-import { PaginationDto } from 'src/common/dtos/pagination.dto';
 import { User } from 'src/users/entities/user.entity';
+import {
+  CreateProductDto,
+  UpdateProductDto,
+  PaginationProductsDto,
+} from './dtos';
 
 @Injectable()
 export class ProductsService {
@@ -50,23 +52,30 @@ export class ProductsService {
     }
   }
 
-  async findAll(paginatioDto: PaginationDto) {
-    const { limit = 10, offset = 0 } = paginatioDto;
+  async findAll(paginatioProductsDto: PaginationProductsDto) {
+    const { take = 12, page = 1, gender = '' } = paginatioProductsDto;
 
     try {
-      const products = await this.productRepository.find({
-        take: limit,
-        skip: offset,
-        //TODO: Completar con la información de las relaciones
+      const [products, totalItems] = await this.productRepository.findAndCount({
+        take,
+        skip: (page - 1) * take,
+        where: {
+          ...(gender && { gender }),
+        },
         relations: {
           images: true,
         },
       });
 
-      return products.map((product) => ({
-        ...product,
-        images: product.images.map((image) => image.url),
-      }));
+      return {
+        currentPage: page,
+        totalPages: Math.ceil(totalItems / take),
+        products: products.map((product) => ({
+          ...product,
+          category: product.category.name,
+          images: product.images.map((image) => image.url),
+        })),
+      };
     } catch (error) {
       this.handleDBExceptions(error);
     }
