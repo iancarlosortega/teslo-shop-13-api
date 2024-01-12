@@ -13,7 +13,7 @@ export class Category {
 
   // Relations
   @OneToMany(() => Product, (product) => product.category, {
-    cascade: true,
+    onDelete: 'CASCADE',
   })
   products: Product[];
 }

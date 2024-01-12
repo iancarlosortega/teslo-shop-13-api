@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { CategoriesService } from 'src/categories/categories.service';
 import { ProductsService } from 'src/products/products.service';
 import { UsersService } from 'src/users/users.service';
-import { User } from 'src/users/entities/user.entity';
 import { initialData } from './data/seed-data';
 
 @Injectable()
@@ -17,7 +16,7 @@ export class SeedService {
     await this.deleteAllTables();
     await this.insertCategories();
     const adminUser = await this.insertUsers();
-    await this.insertProducts(adminUser);
+    await this.insertProducts(adminUser.id);
     return 'Seed executed succesfully';
   }
 
@@ -48,7 +47,7 @@ export class SeedService {
     return users[0];
   }
 
-  private async insertProducts(user: User) {
+  private async insertProducts(userId: string) {
     const seedProducts = initialData.products;
     const insertPromises = [];
 
@@ -61,13 +60,11 @@ export class SeedService {
       ).id;
 
       insertPromises.push(
-        this.productsService.create(
-          {
-            ...product,
-            categoryId,
-          },
-          user,
-        ),
+        this.productsService.create({
+          ...product,
+          categoryId,
+          userId,
+        }),
       );
     });
 
@@ -75,8 +72,8 @@ export class SeedService {
   }
 
   private async deleteAllTables() {
-    await this.usersService.removeAll();
-    await this.categoriesService.removeAll();
     await this.productsService.removeAll();
+    await this.categoriesService.removeAll();
+    await this.usersService.removeAll();
   }
 }

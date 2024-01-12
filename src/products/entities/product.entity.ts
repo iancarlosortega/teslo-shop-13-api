@@ -73,16 +73,24 @@ export class Product {
   })
   categoryId: string;
 
+  @JoinColumn({ name: 'userId' })
+  user: User;
+
+  @Column('text', {
+    select: false,
+  })
+  userId: string;
+
   @OneToMany(() => ProductImage, (productImage) => productImage.product, {
     cascade: true,
     eager: true,
   })
   images?: ProductImage[];
 
-  @ManyToOne(() => User, (user) => user.product, {
-    onDelete: 'CASCADE',
-  })
-  user: User;
+  // @ManyToOne(() => User, (user) => user.product, {
+  //   onDelete: 'CASCADE',
+  // })
+  // user: User;
 
   @BeforeInsert()
   @BeforeUpdate()

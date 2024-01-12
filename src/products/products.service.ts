@@ -10,7 +10,6 @@ import { DataSource, Repository } from 'typeorm';
 import { validate as isUUID } from 'uuid';
 import { ProductImage } from './entities/product-image.entity';
 import { Product } from './entities/product.entity';
-import { User } from 'src/users/entities/user.entity';
 import {
   CreateProductDto,
   UpdateProductDto,
@@ -31,13 +30,12 @@ export class ProductsService {
     private readonly dataSource: DataSource,
   ) {}
 
-  async create(createProductDto: CreateProductDto, user: User) {
+  async create(createProductDto: CreateProductDto) {
     try {
       const { images = [], ...productDetails } = createProductDto;
 
       const product = this.productRepository.create({
         ...productDetails,
-        user,
         images: images.map((image) =>
           this.productImageRepository.create({ url: image }),
         ),
@@ -94,6 +92,7 @@ export class ProductsService {
             slug: term,
           })
           .leftJoinAndSelect('prod.images', 'prodImages')
+          .leftJoinAndSelect('prod.category', 'categories')
           .getOne();
       }
       if (!product)
@@ -112,7 +111,7 @@ export class ProductsService {
     };
   }
 
-  async update(id: string, updateProductDto: UpdateProductDto, user: User) {
+  async update(id: string, updateProductDto: UpdateProductDto) {
     const { images, ...productDetails } = updateProductDto;
 
     const product = await this.productRepository.preload({
@@ -123,7 +122,6 @@ export class ProductsService {
     if (!product)
       throw new NotFoundException(`Product with id: ${id} not found`);
 
-    //TODO: Query Runner
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -135,8 +133,6 @@ export class ProductsService {
           this.productImageRepository.create({ url: image }),
         );
       }
-
-      product.user = user;
       await queryRunner.manager.save(product);
 
       await queryRunner.commitTransaction();
