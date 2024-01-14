@@ -8,6 +8,7 @@ import { CategoriesModule } from './categories/categories.module';
 import { SeedModule } from './seed/seed.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { CountriesModule } from './countries/countries.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { AuthModule } from './auth/auth.module';
     CategoriesModule,
     ProductsModule,
     SeedModule,
+    CountriesModule,
   ],
 })
 export class AppModule {}
