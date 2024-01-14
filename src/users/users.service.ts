@@ -39,9 +39,9 @@ export class UsersService {
     return `This action returns all users`;
   }
 
-  findOne(id: string) {
+  async findOne(id: string) {
     try {
-      const user = this.userRepository.findOneBy({ id });
+      const user = await this.userRepository.findOneBy({ id });
       if (!user) {
         throw new NotFoundException('User not found');
       }

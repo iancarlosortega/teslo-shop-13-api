@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Address } from 'src/addresses/entities/address.entity';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Country {
@@ -12,4 +13,9 @@ export class Country {
 
   @Column('text')
   name: string;
+
+  @OneToMany(() => Address, (address) => address.country, {
+    cascade: true,
+  })
+  addresses?: Address[];
 }

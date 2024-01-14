@@ -9,6 +9,7 @@ import { SeedModule } from './seed/seed.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { CountriesModule } from './countries/countries.module';
+import { AddressesModule } from './addresses/addresses.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { CountriesModule } from './countries/countries.module';
     ProductsModule,
     SeedModule,
     CountriesModule,
+    AddressesModule,
   ],
 })
 export class AppModule {}

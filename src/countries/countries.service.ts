@@ -28,6 +28,26 @@ export class CountriesService {
     }
   }
 
+  async findAll() {
+    try {
+      return await this.countryRepository.find();
+    } catch (error) {
+      this.handleDBExceptions(error);
+    }
+  }
+
+  async findOne(id: string) {
+    try {
+      const country = await this.countryRepository.findOneBy({ id });
+      if (!country) {
+        throw new NotFoundException('Country not found');
+      }
+      return country;
+    } catch (error) {
+      this.handleDBExceptions(error);
+    }
+  }
+
   async removeAll() {
     const query = this.countryRepository.createQueryBuilder('country');
     try {
